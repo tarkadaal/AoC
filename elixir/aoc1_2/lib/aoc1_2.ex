@@ -29,6 +29,16 @@ defmodule Aoc12 do
 		end
 	end
 
+	def search(trail, _, 0), do: {:nomatch, trail}
+	def search([head|tail], direction, distance) do
+		new_position = move head, direction
+		if new_position in tail do
+			{:found_crossover, new_position}
+		else
+			search [new_position, head | tail], direction, distance - 1	
+		end
+	end
+
 	def find_shortest({x,y}) do
 		abs(x) + abs(y)
 	end
@@ -46,15 +56,6 @@ defmodule Aoc12 do
 	def rotate(:west, :L), do: :south
 	def rotate(:west, :R), do: :north
 
-	def search(trail, _, 0), do: {:nomatch, trail}
-	def search([head|tail], direction, distance) do
-		new_position = move head, direction
-		if new_position in tail do
-			{:found_crossover, new_position}
-		else
-			search [new_position, head | tail], direction, distance - 1
-		end
-	end
 
 	def move({x,y}, :north), do: {x, y + 1}
 	def move({x,y}, :east), do: {x + 1, y}
