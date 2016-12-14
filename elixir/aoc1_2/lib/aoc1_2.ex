@@ -4,8 +4,7 @@ defmodule Aoc12 do
 	def solve() do
 		@input 
 		|> tokenize 
-		|> find_trail 
-		|> find_crossover
+		|> find_crossover 
 		|> find_shortest 
 		|> print_shortest
 	end
@@ -16,30 +15,19 @@ defmodule Aoc12 do
 		|> Enum.map(fn {direction, distance} -> {String.to_existing_atom(direction), String.to_integer(distance)} end)
 	end
 
-	def find_trail(tokenized_input) do
-		find_trail tokenized_input, :north, [{0,0}]
+	def find_crossover(tokenized_input) do
+		find_crossover tokenized_input, :north, [{0,0}]
 	end
-	def find_trail([], _, trail) do
-		trail
+	def find_crossover([], _, _) do
+		raise "No Crossover found"
 	end
-	def find_trail([{turn, dist} | tail], dir, trail) do
+	def find_crossover([{turn, dist} | tail], dir, trail) do
 		new_dir = rotate dir, turn
-		new_trail = move trail, new_dir, dist
-		find_trail tail, new_dir, new_trail
-	end
-
-	def find_crossover(trail) do
-		Enum.reverse(trail) |> _find_crossover #trail is built backwards, need to reverse it to make it easier to process
-	end
-	def _find_crossover([head]), do: raise "Couldn't find crossover"
-	def _find_crossover([head | tail]) do
-		if head in tail do
-			head
-		else 
-			_find_crossover tail
+		case search trail, new_dir, dist do
+			{:nomatch, new_trail} -> find_crossover tail, new_dir, new_trail
+			{:found_crossover, crossover} -> crossover
 		end
 	end
-	
 
 	def find_shortest({x,y}) do
 		abs(x) + abs(y)
@@ -58,10 +46,14 @@ defmodule Aoc12 do
 	def rotate(:west, :L), do: :south
 	def rotate(:west, :R), do: :north
 
-	def move(trail, _, 0), do: trail
-	def move([head|tail], direction, distance) do
+	def search(trail, _, 0), do: {:nomatch, trail}
+	def search([head|tail], direction, distance) do
 		new_position = move head, direction
-		move [new_position, head | tail], direction, distance - 1
+		if new_position in tail do
+			{:found_crossover, new_position}
+		else
+			search [new_position, head | tail], direction, distance - 1
+		end
 	end
 
 	def move({x,y}, :north), do: {x, y + 1}
