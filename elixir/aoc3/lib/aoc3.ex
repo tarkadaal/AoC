@@ -5,37 +5,28 @@ defmodule Aoc3 do
 	def solve_part_2(), do:	solve &tokenize_vertical/1
 	defp solve(tokenizer) do
 		@input_path 
-		|> load_input
+		|> File.read!
 		|> tokenizer.()
 		|> Enum.filter(&is_triangle_valid/1)
 		|> length
 	end
 
-	def load_input(path) do
-		File.read!(path)
-	end
-
-	def tokenize_horizontal(input), do:	tokenize input, fn(x) -> for n <- x, do: String.split n end
-	def tokenize_vertical(input), do: tokenize input, &rearrange_vertical_triangles/1
+	def tokenize_horizontal(input), do:	tokenize input, fn(x) ->  x end
+	def tokenize_vertical(input), do: tokenize input, &rearrange/1
 	defp tokenize(input, strategy) do
 		input
 		|> String.trim_trailing
-		|> String.split("\n")
+		|> String.split
 		|> strategy.()
-		|> Enum.map(fn(x) -> Enum.map(x, &String.to_integer/1) end)
-	end
-
-	def rearrange_vertical_triangles(sides) do
-		rearrange_vertical_triangles(sides, [], [], [])
-	end
-	defp rearrange_vertical_triangles([],first, second, third) do
-		third ++ second ++ first
-		|> Enum.reverse
+		|> Enum.map(&String.to_integer/1) 
 		|> Enum.chunk(3)
 	end
-	defp rearrange_vertical_triangles([s | sides], first, second, third) do
-		[a,b,c] = String.split(s)
-		rearrange_vertical_triangles(sides, [a | first], [b | second], [c | third])
+
+	def rearrange(sides) do
+		a = sides |> Enum.take_every(3)
+		b = sides |> Enum.drop(1) |> Enum.take_every(3)
+		c = sides |> Enum.drop(2) |> Enum.take_every(3)
+		a ++ b ++ c 
 	end
 
 	def is_triangle_valid([a,b,c]) do

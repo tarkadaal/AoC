@@ -19,8 +19,8 @@ defmodule Aoc3Test do
   	assert Aoc3.is_triangle_valid([10,11,12]) ==true
   end
 
-  test "rearrange vertical triangles" do
-  	result = Aoc3.rearrange_vertical_triangles ["1 2 3","4 5 6","7 8 9","10 11 12","13 14 15","16 17 18"]
-  	assert result == [["1","4","7"],["10","13","16"],["2","5","8"],["11","14","17"],["3","6","9"],["12","15","18"]]
+  test "rearrange triangles to be vertical" do
+  	result = Aoc3.rearrange ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18"]
+  	assert result == ["1","4","7", "10","13","16","2","5","8","11","14","17","3","6","9","12","15","18"]
   end
 end
