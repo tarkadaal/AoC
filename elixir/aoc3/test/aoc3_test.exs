@@ -15,8 +15,8 @@ defmodule Aoc3Test do
   end
 
   test "check triangles" do
-  	assert Aoc3.is_triangle_valid([1,2,42]) == false
-  	assert Aoc3.is_triangle_valid([10,11,12]) ==true
+  	assert Aoc3.valid_triangle?([1,2,42]) == false
+  	assert Aoc3.valid_triangle?([10,11,12]) ==true
   end
 
   test "rearrange triangles to be vertical" do

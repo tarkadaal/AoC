@@ -7,11 +7,11 @@ defmodule Aoc3 do
 		@input_path 
 		|> File.read!
 		|> tokenizer.()
-		|> Enum.filter(&is_triangle_valid/1)
+		|> Enum.filter(&valid_triangle?/1)
 		|> length
 	end
 
-	def tokenize_horizontal(input), do:	tokenize input, fn(x) ->  x end
+	def tokenize_horizontal(input), do: tokenize input, fn(x) ->  x end
 	def tokenize_vertical(input), do: tokenize input, &rearrange/1
 	defp tokenize(input, strategy) do
 		input
@@ -29,13 +29,7 @@ defmodule Aoc3 do
 		a ++ b ++ c 
 	end
 
-	def is_triangle_valid([a,b,c]) do
-		is_side_valid(a, [b,c])
-		and is_side_valid(b, [a,c])
-		and is_side_valid(c, [a,b])
-	end
-
-	defp is_side_valid(side, others) do
-		Enum.sum(others) > side
-	end
+	def valid_triangle?([a,b,c]), do: valid_side?(a, [b,c]) and valid_side?(b, [a,c]) and valid_side?(c, [a,b])
+	defp valid_side?(side, others), do: Enum.sum(others) > side
+	
 end
