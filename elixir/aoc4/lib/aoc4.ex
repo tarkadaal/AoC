@@ -1,14 +1,25 @@
 defmodule Aoc4 do
 	@input_path "./day4input.txt"
 
-	def solve_day_1() do
+	def solve_part_1() do
+		valid_rooms
+		|> Enum.map(&(&1.sector))
+		|> Enum.sum
+	end
+
+	def solve_part_2() do
+		valid_rooms
+		|> Enum.map(fn x -> %Room{ name: rotate(x.name, x.sector), sector: x.sector } end)
+		|> Enum.filter(fn x -> String.contains?( x.name, "north") end)
+		|> IO.inspect
+	end
+
+	defp valid_rooms() do
 		@input_path
 		|> File.read!
 		|> String.split
 		|> Enum.map(&Room.create_from/1)
 		|> Enum.filter(&real?/1)
-		|> Enum.map(&(&1.sector))
-		|> Enum.sum
 	end
 
 	def real?(room) do
@@ -23,9 +34,20 @@ defmodule Aoc4 do
 	end
 
 	def process_name(name) do
-		b = String.replace(name, "-", "") |> String.graphemes 
+		b = String.replace(name, " ", "") |> String.graphemes 
 		m = for x <- Enum.dedup(b), into: %{}, do: {x, 0}
 		Enum.reduce b, m, fn(x,acc) -> %{acc | x => acc[x]+1 } end
+	end
+
+	def rotate(str, x) do
+		str
+		|> to_charlist
+		|> Enum.map(fn(c) -> _rotate(c,x) end)
+		|> to_string
+	end
+	defp _rotate(c, _) when c < ?a or c > ?z, do: c
+	defp _rotate(c, x) do
+		rem((c - ?a) + x, 26) + ?a
 	end
 
 end

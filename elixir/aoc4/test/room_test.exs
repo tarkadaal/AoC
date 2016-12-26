@@ -15,7 +15,7 @@ defmodule RoomTest do
 
   test "Room creation" do
   	r = Room.create_from("aaaaa-bbb-z-y-x-123[abxyz]")
-  	assert r.name == "aaaaa-bbb-z-y-x"
+  	assert r.name == "aaaaa bbb z y x"
   	assert r.sector == 123
   	assert r.checksum == "abxyz"
   end
